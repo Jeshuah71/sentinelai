@@ -1,0 +1,114 @@
+/* ===================================================
+   CSS CUSTOM PROPERTIES ("variables")
+   --variable-name: value;  → define it here once
+   var(--variable-name)     → use it anywhere below
+   =================================================== */
+
+/* ":root" means "apply to the whole page" */
+:root {
+  /* Brand colors */
+  --color-bg:        #f0ebe3;   /* warm cream background */
+  --color-surface:   #ffffff;   /* white cards */
+  --color-dark:      #2b2822;   /* near-black text */
+  --color-accent:    #b05a3a;   /* terracotta — buttons, highlights */
+  --color-accent-lt: #f0ded5;   /* light terracotta — badge backgrounds */
+  --color-muted:     #8a8070;   /* gray text for secondary labels */
+  --color-section-dark: #2b2822; /* the dark "built on standards" block */
+
+  /* Status dot colors */
+  --color-green:  #4a7c59;
+  --color-yellow: #b08a3a;
+  --color-red:    #b03a3a;
+
+  /* Typography */
+  --font-serif:  'Georgia', 'Times New Roman', serif;
+  --font-sans:   'Helvetica Neue', Arial, sans-serif;
+
+  /* Spacing scale — use these instead of random pixel values */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  48px;
+  --space-2xl: 80px;
+
+  /* Border radius */
+  --radius-sm:  8px;
+  --radius-md:  16px;
+  --radius-lg:  24px;
+  --radius-pill: 999px; /* makes any element a full pill shape */
+}
+
+/* ===================================================
+   RESET — browser default styles are inconsistent,
+   this zeroes them out so we start fresh.
+   =================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box; /* padding stays INSIDE the width, not outside */
+  margin: 0;
+  padding: 0;
+}
+
+/* ===================================================
+   BASE STYLES
+   =================================================== */
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-dark);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased; /* makes text crisper on Mac */
+}
+
+/* Headings use the serif font to match the design */
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  line-height: 1.2;
+}
+
+/* All buttons reset — we'll style each one individually */
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+}
+
+/* ===================================================
+   SHARED UTILITY CLASSES
+   A "utility class" is a tiny single-purpose class
+   you can add to any element anywhere.
+   =================================================== */
+
+/* Priority badge pills — HIGH / MED / LOW / CLEAR */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.badge--high   { background: #f5ddd8; color: #8b2a1a; }
+.badge--med    { background: #f5ead8; color: #7a5c1a; }
+.badge--low    { background: #dde8f5; color: #1a3a6b; }
+.badge--clear  { background: #ddf5e8; color: #1a5c38; }
+
+/* Status dot — the small colored circle */
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%; /* 50% makes a rectangle into a circle */
+  flex-shrink: 0;     /* don't let flexbox squish it */
+}
+
+.dot--green  { background: var(--color-green); }
+.dot--yellow { background: var(--color-yellow); }
+.dot--red    { background: var(--color-red); }
