@@ -1,14 +1,8 @@
-// "props" are values passed INTO a component from its parent.
-// Here we receive:
-//   onNavigate — the setPage function from App.jsx
-//   page       — which page we're on ('home' or 'dashboard')
-function Header({ onNavigate, page }) {
+function Header({ onNavigate, page, onDownload }) {
   return (
-    /* <header> is a semantic HTML tag — tells the browser "this is the top nav" */
     <header className="header">
 
-      {/* Logo — clicking it always goes back to home */}
-      <button className="header__logo" onClick={() => onNavigate('home')}>
+      <button className="header__logo" onClick={() => onNavigate('home')} aria-label="Go to home page">
         <div className="header__logo-icon">
           <div className="header__logo-dot"></div>
         </div>
@@ -18,7 +12,6 @@ function Header({ onNavigate, page }) {
         </div>
       </button>
 
-      {/* Right side button — label changes depending on which page we're on */}
       {page === 'home'
         ? (
           <button className="btn btn--accent" onClick={() => onNavigate('dashboard')}>
@@ -26,7 +19,7 @@ function Header({ onNavigate, page }) {
           </button>
         )
         : (
-          <button className="btn btn--accent">
+          <button className="btn btn--accent" onClick={onDownload}>
             Weekly briefing
           </button>
         )

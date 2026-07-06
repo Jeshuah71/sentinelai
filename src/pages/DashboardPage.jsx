@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import Header from '../components/layout/Header'
 import SecurityScore from '../components/dashboard/SecurityScore'
 import NistBar from '../components/dashboard/NistBar'
@@ -5,29 +6,49 @@ import TaskList from '../components/dashboard/TaskList'
 import ActivityFeed from '../components/dashboard/ActivityFeed'
 import ConnectedSources from '../components/dashboard/ConnectedSources'
 import { dashboardData } from '../data/mockData'  // pull in all our fake data
+import { buildWeeklyBriefing, downloadTextFile } from '../utils/briefing'
 import '../styles/dashboard.css'
 
 function DashboardPage({ onNavigate }) {
-
-  // Destructure the data we need from the imported object.
-  // This is the same as writing:
-  //   const business = dashboardData.business
-  //   const score = dashboardData.score
-  //   ... etc.
   const { business, score, tasks, events, nist, sources, totalEvents, activeSources, totalSources } = dashboardData
+  const [doneTaskIds, setDoneTaskIds] = useState(() => {
+    try {
+      return JSON.parse(window.localStorage.getItem('vultur.doneTaskIds')) || []
+    } catch {
+      return []
+    }
+  })
 
-  // Build the date string: "TUESDAY · JUNE 28, 2026"
   const today = new Date()
   const dateStr = today.toLocaleDateString('en-US', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   }).toUpperCase()
 
-  // Count tasks completed (we'll start at 0 — TaskList handles its own state)
   const taskCount = tasks.length
+  const completedCount = doneTaskIds.length
+
+  useEffect(() => {
+    window.localStorage.setItem('vultur.doneTaskIds', JSON.stringify(doneTaskIds))
+  }, [doneTaskIds])
+
+  function handleTaskToggle(taskId) {
+    setDoneTaskIds((current) => {
+      if (current.includes(taskId)) {
+        return current.filter((id) => id !== taskId)
+      }
+
+      return [...current, taskId]
+    })
+  }
+
+  function handleDownloadBriefing() {
+    const briefing = buildWeeklyBriefing(dashboardData, doneTaskIds)
+    downloadTextFile('vultur-sentinel-weekly-briefing.txt', briefing)
+  }
 
   return (
     <div className="dashboard">
-      <Header onNavigate={onNavigate} page="dashboard" />
+      <Header onNavigate={onNavigate} page="dashboard" onDownload={handleDownloadBriefing} />
 
       <main className="dashboard__main">
 
@@ -38,7 +59,7 @@ function DashboardPage({ onNavigate }) {
             <h1 className="dashboard__name">Good morning, {business.owner}.</h1>
             <p className="dashboard__biz">{business.name} · {business.employees} employees</p>
           </div>
-          <button className="dashboard__download">
+          <button className="dashboard__download" onClick={handleDownloadBriefing}>
             <span className="dot dot--green"></span>
             Download weekly briefing
           </button>
@@ -52,12 +73,14 @@ function DashboardPage({ onNavigate }) {
           <div className="plan-card card">
             <div className="plan-card__header">
               <p className="card__label">THIS WEEK'S PLAN</p>
-              <span className="plan-card__done">0 of {taskCount} done</span>
+              <span className="plan-card__done">{completedCount} of {taskCount} done</span>
             </div>
-            {/* Progress bars (one per task, all gray = nothing done yet) */}
             <div className="plan-card__bars">
               {tasks.map((t) => (
-                <div key={t.id} className="plan-card__bar"></div>
+                <div
+                  key={t.id}
+                  className={`plan-card__bar ${doneTaskIds.includes(t.id) ? 'plan-card__bar--done' : ''}`}
+                ></div>
               ))}
             </div>
             <p className="plan-card__text">
@@ -76,7 +99,7 @@ function DashboardPage({ onNavigate }) {
 
         {/* BOTTOM ROW: tasks + activity feed side by side */}
         <div className="dashboard__bottom-row">
-          <TaskList tasks={tasks} />
+          <TaskList tasks={tasks} doneTaskIds={doneTaskIds} onTaskToggle={handleTaskToggle} />
           <div className="dashboard__right-col">
             <ActivityFeed events={events} totalEvents={totalEvents} />
             <ConnectedSources

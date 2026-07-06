@@ -111,6 +111,7 @@
   background: #e0d8ce;
   border-radius: 3px;
 }
+.plan-card__bar--done { background: var(--color-green); }
 
 .plan-card__text { font-size: 0.9rem; margin-bottom: var(--space-sm); }
 .plan-card__time { font-size: 0.85rem; color: var(--color-accent); font-weight: 600; }
@@ -247,3 +248,68 @@
 .sources__name  { flex: 1; }
 .sources__label { color: var(--color-muted); font-size: 0.85rem; }
 .sources__label--warn { color: var(--color-yellow); }
+
+@media (max-width: 980px) {
+  .dashboard__main {
+    padding: var(--space-xl) 24px var(--space-2xl);
+  }
+
+  .dashboard__greeting,
+  .dashboard__top-row,
+  .dashboard__bottom-row {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard__greeting {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .nist__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 620px) {
+  .dashboard__main {
+    padding: var(--space-lg) 18px var(--space-xl);
+  }
+
+  .dashboard__download {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .score-card__body,
+  .tasklist__header,
+  .feed__header,
+  .sources__header,
+  .plan-card__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .nist__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tasklist__row,
+  .feed__item-header,
+  .sources__item {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .tasklist__task-title,
+  .feed__item-meta,
+  .feed__item-detail,
+  .feed__item-mitre {
+    padding-left: 0;
+  }
+
+  .sources__label {
+    width: 100%;
+    padding-left: 18px;
+  }
+}

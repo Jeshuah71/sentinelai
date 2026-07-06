@@ -1,35 +1,43 @@
-// "import" pulls code in from another file so we can use it here.
-import { useState } from 'react'          // useState lets us track which page is showing
-import HomePage from './pages/HomePage'   // our home page component (we'll build this next)
-import DashboardPage from './pages/DashboardPage' // the dashboard component
-import './styles/global.css'              // loads our global colors/fonts for the whole app
+import { useEffect, useState } from 'react'
+import HomePage from './pages/HomePage'
+import DashboardPage from './pages/DashboardPage'
+import './styles/global.css'
 
-// A React component is just a function that returns HTML-like code (JSX).
-// This one is the "root" — it wraps everything else.
+function getPageFromPath() {
+  return window.location.pathname === '/dashboard' ? 'dashboard' : 'home'
+}
+
 function App() {
+  const [page, setPage] = useState(getPageFromPath)
 
-  // useState returns two things in an array:
-  //   1. "page" — the current value ('home' or 'dashboard')
-  //   2. "setPage" — a function to change that value
-  // 'home' is the starting value (called the "initial state").
-  const [page, setPage] = useState('home')
+  useEffect(() => {
+    function handlePopState() {
+      setPage(getPageFromPath())
+    }
 
-  // We pass "setPage" down to child components so a button in the
-  // header can switch pages even though it's not inside App directly.
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  function navigate(nextPage) {
+    const path = nextPage === 'dashboard' ? '/dashboard' : '/'
+
+    if (window.location.pathname !== path) {
+      window.history.pushState({}, '', path)
+    }
+
+    setPage(nextPage)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <div>
-      {/* This is a conditional render:
-          if page equals 'home', show <HomePage />
-          otherwise show <DashboardPage />
-          The ? and : work like an if/else on one line. */}
       {page === 'home'
-        ? <HomePage onNavigate={setPage} />
-        : <DashboardPage onNavigate={setPage} />
+        ? <HomePage onNavigate={navigate} />
+        : <DashboardPage onNavigate={navigate} />
       }
     </div>
   )
 }
 
-// "export default" means this is the main thing this file exports.
-// main.jsx imports it and mounts it to the HTML page.
 export default App

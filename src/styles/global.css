@@ -63,6 +63,10 @@ body {
   -webkit-font-smoothing: antialiased; /* makes text crisper on Mac */
 }
 
+#root {
+  min-height: 100vh;
+}
+
 /* Headings use the serif font to match the design */
 h1, h2, h3 {
   font-family: var(--font-serif);
@@ -76,6 +80,13 @@ button {
   background: none;
   font-family: var(--font-sans);
   font-size: 1rem;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(176, 90, 58, 0.35);
+  outline-offset: 3px;
 }
 
 /* ===================================================
@@ -112,3 +123,14 @@ button {
 .dot--green  { background: var(--color-green); }
 .dot--yellow { background: var(--color-yellow); }
 .dot--red    { background: var(--color-red); }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
